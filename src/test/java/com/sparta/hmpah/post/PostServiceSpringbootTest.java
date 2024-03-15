@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,10 +41,20 @@ public class PostServiceSpringbootTest {
     @Test
     @DisplayName("paging 하기")
     void page(){
-        QueryResults<Post> pageAll = postQueryRepository.findPageAll();
+        System.out.println(" querydsl ");//querydsl
+
+        QueryResults<Post> pageAll = postQueryRepository.findPageAll();//0,5
         List<Post> results = pageAll.getResults();
         for (Post result : results) {
-            System.out.println("result.getId() = " + result.getId());
+            System.out.println(result.getId());
+        }
+
+        System.out.println("jpql");//jpql
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC,"id"));
+        Page<Post> basicPageAll = postRepository.findPageAll(pageRequest);
+        List<Post> basicPageAllContent = basicPageAll.getContent();
+        for (Post post : basicPageAllContent) {
+            System.out.println(post.getId());
         }
     }
 
@@ -76,6 +87,5 @@ public class PostServiceSpringbootTest {
         for (Post post : byContainTitleKeyWord) {
             System.out.println(post.getTitle());
         }
-
     }
 }
